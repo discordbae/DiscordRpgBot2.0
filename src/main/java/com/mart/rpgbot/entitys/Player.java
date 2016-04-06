@@ -40,7 +40,8 @@ public class Player {
         this.id = id;
     }
 
-    public Player(String playerClass, int level, double exp, int strength, int intelligence, int dexterity, int luck, int blockChance){
+    public Player(String id, String playerClass, int level, double exp, int strength, int intelligence, int dexterity, int luck, int blockChance){
+        this.id = id;
         this.playerClass = playerClass;
         this.level = level;
         this.strength = strength;

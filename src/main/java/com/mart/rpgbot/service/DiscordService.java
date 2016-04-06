@@ -1,6 +1,7 @@
 package com.mart.rpgbot.service;
 
 import com.google.gson.Gson;
+import com.mart.rpgbot.eventhandlers.CharacterHandler;
 import com.mart.rpgbot.eventhandlers.OnReadyEvent;
 import com.mart.rpgbot.repository.PlayerRepository;
 import com.mysql.jdbc.Connection;
@@ -14,6 +15,7 @@ import sx.blah.discord.util.DiscordException;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
+import java.util.List;
 
 @Service
 public class DiscordService {
@@ -22,8 +24,7 @@ public class DiscordService {
     public static IDiscordClient pub;
     public static Connection conn = null;
 
-    @Autowired
-    private PlayerRepository playerRepository;
+    public List<Object> queuedSubscribers;
 
     @PostConstruct
     private void initialize() throws FileNotFoundException, DiscordException {
@@ -33,11 +34,25 @@ public class DiscordService {
         pub = client;
         EventDispatcher dispatcher = client.getDispatcher();
         dispatcher.registerListener(new OnReadyEvent());
+        //dispatcher.registerListener(new CharacterHandler());
     }
+
+    /*@Retryable(maxAttempts = 10, backoff = @Backoff(delay = 10000L))
+    public void login(){
+
+    }*/
 
     public class LoginDetails {
         public String email;
         public String pass;
+    }
+
+    public void subscribe(Object subscriber) {
+        if (pub != null && pub.isReady()) {
+            System.out.println("Subscribing {}" + subscriber.getClass().getCanonicalName());
+            pub.getDispatcher().registerListener(subscriber);
+        }
+        queuedSubscribers.add(subscriber);
     }
 
 }
