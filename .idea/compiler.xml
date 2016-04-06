@@ -22,10 +22,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="DiscordRpgBot" />
         <module name="LearningSpring" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="DiscordRpgBot" target="1.8" />
       <module name="LearningSpring" target="1.8" />
     </bytecodeTargetLevel>
   </component>
