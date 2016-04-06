@@ -15,16 +15,17 @@ import sx.blah.discord.util.DiscordException;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class DiscordService {
 
     private String email, password;
-    public static IDiscordClient pub;
+    public IDiscordClient pub;
     public static Connection conn = null;
 
-    public List<Object> queuedSubscribers;
+    public List<Object> queuedSubscribers = new ArrayList<Object>();
 
     @PostConstruct
     private void initialize() throws FileNotFoundException, DiscordException {
@@ -34,13 +35,15 @@ public class DiscordService {
         pub = client;
         EventDispatcher dispatcher = client.getDispatcher();
         dispatcher.registerListener(new OnReadyEvent());
-        //dispatcher.registerListener(new CharacterHandler());
+        login();
     }
 
-    /*@Retryable(maxAttempts = 10, backoff = @Backoff(delay = 10000L))
     public void login(){
-
-    }*/
+        queuedSubscribers.forEach(subscriber -> {
+            System.out.println("Subscribing {}" + subscriber.getClass().getCanonicalName());
+            pub.getDispatcher().registerListener(subscriber);
+        });
+    }
 
     public class LoginDetails {
         public String email;

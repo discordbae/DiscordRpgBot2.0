@@ -20,11 +20,15 @@ import javax.annotation.PostConstruct;
 @Component
 public class CharacterHandler {
 
-    @Autowired
-    private PlayerRepository playerRepository;
+    private final DiscordService discordService;
+
+    private final PlayerRepository playerRepository;
 
     @Autowired
-    private DiscordService discordService;
+    public CharacterHandler(PlayerRepository playerRepository, DiscordService discordService) {
+        this.playerRepository = playerRepository;
+        this.discordService = discordService;
+    }
 
     @EventSubscriber
     public void onMessageEvent(MessageReceivedEvent event) throws HTTP429Exception, DiscordException, MissingPermissionsException {
@@ -44,7 +48,7 @@ public class CharacterHandler {
 
     public void sendMessage(String message, MessageReceivedEvent event) throws HTTP429Exception, DiscordException, MissingPermissionsException {
         String sender = event.getMessage().getAuthor().toString();
-        new MessageBuilder(DiscordService.pub).appendContent(sender+"\n").appendContent(message).withChannel(event.getMessage().getChannel()).build();
+        new MessageBuilder(discordService.pub).appendContent(sender+"\n").appendContent(message).withChannel(event.getMessage().getChannel()).build();
     }
 
     @PostConstruct
